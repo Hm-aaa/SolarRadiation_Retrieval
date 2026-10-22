@@ -1,0 +1,156 @@
+# ==============================================================================
+# SMACNP Localized Configuration
+# Hyperparams: r_dim=64, w_dim=256, v_dim=512, num_heads=8, hidden_size=512,
+#              num_layers_mlp=3, dropout_rate=0.1, use_layer_norm=false,
+#              localized_params.k=15, use_positional_encoding=true, pe_dim=32,
+#               smacnp_lr=0.000419, laplace_distance_p=1.0
+# ==============================================================================
+
+
+project:
+  seed: 42
+
+data:
+  source_weather_path_all: "data/source_data/tavg_prec_2020_2023.parquet"
+  processed_dir_all: "data/daily_all"
+  dem_crs: "EPSG:3844"
+  country_border_path: "data/borders/rou_border.gpkg"
+
+outputs:
+  checkpoints: "outputs/checkpoints"
+  predictions: "outputs/predictions"
+  plots: "outputs/plots"
+
+model:
+  type: "SMACNP"
+
+  smacnp:
+    # ==========================================================================
+    # CONFIGURATION SELECTION
+    # ==========================================================================
+    configuration: 'localized'
+
+    # --------------------------------------------------------------------------
+    # DATA & DIMENSION CONFIGURATION
+    # --------------------------------------------------------------------------
+    input_dim: 10
+    spatial_dim: 2
+    attr_dim: 8
+    y_dim: 2
+    spatial_indices: [0, 1]
+
+    # --------------------------------------------------------------------------
+    # GENERAL MODEL ARCHITECTURE (Trial #758)
+    # --------------------------------------------------------------------------
+    r_dim: 64
+    w_dim: 256
+    v_dim: 512
+    hidden_size: 512
+    num_layers_mlp: 3
+    num_heads: 8
+
+    # --------------------------------------------------------------------------
+    # REGULARIZATION (Trial #758)
+    # --------------------------------------------------------------------------
+    dropout_rate: 0.1
+
+    # -------------------------------------------------------------------------- 
+    # LAYER NORMALIZATION (Trial #758)
+    # --------------------------------------------------------------------------
+    use_layer_norm: false
+    
+    # --------------------------------------------------------------------------
+    # LAPLACE ATTENTION DISTANCE
+    # --------------------------------------------------------------------------
+    laplace_distance_p: 1.0
+
+    # --------------------------------------------------------------------------
+    # VARIANCE FLOORS
+    # --------------------------------------------------------------------------
+    temp_variance_floor: 2.0e-4
+    precip_variance_floor: 2.0e-2
+    
+    # ==========================================================================
+    # ENCODER CONFIGURATION (Active: Localized - Trial #758)
+    # ==========================================================================
+    encoder:
+      type: 'localized'
+      localized_params:
+        k: 15
+        use_positional_encoding: true
+        pe_dim: 32
+        pe_type: 'sinusoidal'
+
+
+# ==============================================================================
+# TRAINING CONFIGURATION (Trial #758)
+# ==============================================================================
+training:
+  batch_size: 64
+  num_workers: 4
+  use_mixed_precision: true
+  num_epochs: 5000
+
+  # Learning Rate (Trial #758)
+  smacnp_lr: 0.000419
+  
+  # Optimizer
+  optimizer:
+    name: 'AdamW'
+    weight_decay: 1e-5
+  
+  # Gradient Clipping
+  clip_grad_norm: 1.0
+  
+  # Context Sampling
+  context_fraction_train: 0.5
+  on_grid_training: true
+  
+  # Loss Configuration
+  precip_distribution: "lognormal"
+  
+  loss_weights:
+    temp: 1.0
+    precip_prob: 1.0
+    precip_amount: 1.0
+  
+  # Learning Rate Scheduler
+  scheduler:
+    name: ReduceLROnPlateau
+    factor: 0.7
+    patience: 50
+    min_lr: 1e-6
+  
+  # Early Stopping
+  early_stopping:
+    patience: 200
+    min_delta: 1e-5
+
+# ==============================================================================
+# PREDICTION CONFIGURATION
+# ==============================================================================
+prediction:
+  batch_size: 8192
+  
+  station_conditioning:
+    enabled: false
+    mode: "none"
+    
+    # Start here - subtle but meaningful increase
+    influence_radius: 0.015
+    hard_match_weight: 0.95
+    deviation_threshold: 2.0
+
+    # Step 2: Add this if Option 1 is not enough
+    min_conditioning_strength: 0.15
+    
+    # Step 3: Add this if still not enough
+    max_conditioning_strength: 0.85
+    
+    # # Step 4: Add this for even stronger effect
+    # deviation_threshold: 1.5
+    
+    # # Step 5: Nuclear option - use with care
+    # influence_radius: 0.025
+    # kernel_type: "gaussian"
+    # kernel_sharpness: 2.5
