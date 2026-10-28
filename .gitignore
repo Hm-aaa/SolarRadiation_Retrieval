@@ -5,4 +5,7 @@ __pycache__/
 .idea/
 .vscode/
 .DS_Store
+data/coords_himawari/
+data/DEM/
+
 

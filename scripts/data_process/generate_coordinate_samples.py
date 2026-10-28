@@ -426,7 +426,4 @@ if __name__ == "__main__":
     # python3 generate_coordinate_samples.py --step 0.25 --dry-run
 
     # 0.25° 下中国区域大约只有 1.5 万个网格点，通常需要把总数降到 1.5 万以内，例如：
-    # python3 generate_coordinate_samples.py \
-    # --step 0.25 \
-    # --draw-count 5 \
-    # --points-per-draw 3000
+    # python3 generate_coordinate_samples.py --step 0.05 --draw-count 38 --points-per-draw 10000
