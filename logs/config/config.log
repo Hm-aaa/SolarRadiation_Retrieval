@@ -9,3 +9,4 @@ Epoch [007/1001] | Train RMSE: 0.030065 | Val RMSE: 0.170444 | Time: 342.03s
 Epoch [008/1001] | Train RMSE: 0.029058 | Val RMSE: 0.146821 | Time: 341.99s
 Epoch [009/1001] | Train RMSE: 0.027154 | Val RMSE: 0.177487 | Time: 342.11s
 Epoch [010/1001] | Train RMSE: 0.029632 | Val RMSE: 0.146529 | Time: 342.16s
+Epoch [011/1001] | Train RMSE: 0.025363 | Val RMSE: 0.157081 | Time: 341.94s
