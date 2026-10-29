@@ -2,7 +2,7 @@ import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from utils import separate_spatial_attributes
+from .utils import separate_spatial_attributes
 import numpy as np
 from typing import Dict, Optional, Tuple
 from scipy.spatial.distance import cdist
@@ -1420,7 +1420,7 @@ class SMACNP_ALL(nn.Module):
         # --- 3. Decoders ---
         # Base local decoders
         local_temp_mean_decoder = MeanDecoder(r_dim, w_dim, spatial_dim, encoder_attr_dim, 
-                                              hidden_size, 21, dropout_rate, num_layers_mlp)
+                                              hidden_size, y_dim, dropout_rate, num_layers_mlp)
         # local_temp_variance_decoder = VarianceDecoder(v_dim, spatial_dim, encoder_attr_dim, 
         #                                               hidden_size, 1, dropout_rate, num_layers_mlp)
 
@@ -1496,10 +1496,7 @@ class SMACNP_ALL(nn.Module):
         temp_mu = self.temp_mean_decoder(r_star, w_star, s_target, x_attr_target)
         # temp_variance = self.temp_variance_decoder(v_star, s_target, x_attr_target)
 
-        return {
-            "solar_mu": temp_mu, 
-            # "temp_variance": temp_variance
-        }
+        return temp_mu
 
 if __name__ == "__main__":
     # GPU smoke test for SMACNP_ALL

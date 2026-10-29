@@ -1,0 +1,49 @@
+# config.yaml
+project:
+  name1: 'Solar Radiation Retrieval'
+  time: '2026-10-01'
+model:
+  name: 'SMACNP'
+
+  # 根据数据或任务确定
+  input_dim: 10
+  spatial_dim: 2
+  attr_dim: 8
+  y_dim: 1
+
+  # 模型结构参数
+  r_dim: 256          # 属性维度
+  w_dim: 256          # 坐标维度
+  v_dim: 256          # 方差维度
+  hidden_size: 512    # MLP 隐藏层维度
+  num_heads: 16       # 注意力头数量
+  dropout_rate: 0.1   
+
+  # 数据相关参数-坐标索引位置
+  spatial_indices: [0, 1]
+
+  # 开关项
+  use_hybrid_decoder: false
+  use_adaptive_knn: false
+  use_positional_encoding: false
+
+  # 超参数
+  lr: 1.0e-05
+  batch_size: 256
+  epochs: 1000
+
+  # 训练验证数据集
+  train_sets: '/home/jinhm/data/solar/era5_solar/MirrorEarth/coords_04/coords_04_train.npz'
+  val_sets: '/home/jinhm/data/solar/era5_solar/MirrorEarth/coords_04/coords_04_val.npz'
+  context_fraction: 0.5
+  send: 42
+
+  # GPU设备
+  device: 'cuda:0'
+
+  # 日志
+  log_dir: '/home/jinhm/PhD_Project/SolarRadiation_Retrieval/logs/config'
+
+  # 模型权重文件保存路径
+  patience: 20
+  checkpoints: '/home/jinhm/PhD_Project/SolarRadiation_Retrieval/outputs/checkpoints/smacnp_best.pt'

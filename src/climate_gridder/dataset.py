@@ -1,6 +1,7 @@
 import torch
 import numpy as np
 from torch.utils.data import Dataset, DataLoader
+
 class SMACNPDataset(Dataset):
     """
         information 
@@ -48,9 +49,9 @@ class SMACNPDataset(Dataset):
 
         return {
             "x_context": torch.as_tensor(x_context, dtype=torch.float32),
-            "y_context": torch.as_tensor(y_context, dtype=torch.float32),
+            "y_context": torch.as_tensor(y_context, dtype=torch.float32).unsqueeze(-1),
             "x_target": torch.as_tensor(x_target, dtype=torch.float32),
-            "y_target": torch.as_tensor(y_target, dtype=torch.float32)
+            "y_target": torch.as_tensor(y_target, dtype=torch.float32).unsqueeze(-1)
         }
 
 if __name__ == "__main__":
@@ -69,6 +70,6 @@ if __name__ == "__main__":
         persistent_workers=True
     )
 
-    for batch_idx, batch in enumerate(dataloader):
-        print(batch_idx,batch['x_context'].shape,batch['y_context'].shape)
+    for batch in dataloader:
+        print(batch['x_context'].shape,batch['y_context'].shape)
 

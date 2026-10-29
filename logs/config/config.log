@@ -1,0 +1,9 @@
+Using Global Attention encoder (Paper Faithful Keys: Key=Attr, Value=Attr+Y)
+Epoch [001/1001] | Train RMSE: 0.165332 | Val RMSE: 0.266960 | Time: 343.94s
+Epoch [002/1001] | Train RMSE: 0.083864 | Val RMSE: 0.203731 | Time: 341.60s
+Epoch [003/1001] | Train RMSE: 0.039291 | Val RMSE: 0.237215 | Time: 341.56s
+Epoch [004/1001] | Train RMSE: 0.046501 | Val RMSE: 0.151906 | Time: 341.44s
+Epoch [005/1001] | Train RMSE: 0.031828 | Val RMSE: 0.175738 | Time: 341.61s
+Epoch [006/1001] | Train RMSE: 0.033913 | Val RMSE: 0.141042 | Time: 341.93s
+Epoch [007/1001] | Train RMSE: 0.030065 | Val RMSE: 0.170444 | Time: 342.03s
+Epoch [008/1001] | Train RMSE: 0.029058 | Val RMSE: 0.146821 | Time: 341.99s
