@@ -50,7 +50,7 @@ def load_data_by_time_range(
         return data
 
 # 根据训练，验证，测试读取数据。
-label = "train"
+label = "val"
 project = 'coords_04'
 
 if label == 'train':
@@ -64,7 +64,7 @@ else:
 data_dir = f'/home/jinhm/data/solar/era5_solar/MirrorEarth/{project}'
 
 data_List = []
-for coords_file_item in glob.glob(f'{data_dir}/*'):
+for coords_file_item in glob.glob(f'{data_dir}/*.csv'):
     data = load_data_by_time_range(
         csv_file=coords_file_item,
         start_time=start,
@@ -96,7 +96,7 @@ if label == 'train':
     mu = np.nanmean(elev)
     sigma = np.nanstd(elev)
 else:
-    loaded = np.load(f"/home/jinhm/data/solar/era5_solar/MirrorEarth/{project}/{project}_{label}.npz",allow_pickle=False)
+    loaded = np.load(f"/home/jinhm/data/solar/era5_solar/MirrorEarth/{project}/{project}_train.npz",allow_pickle=False)
     mu = loaded["elevation_mu"]
     sigma = loaded["elevation_sigma"]
 
@@ -135,13 +135,14 @@ day_sin = np.sin(day_phase)
 day_cos = np.cos(day_phase)
 
 # 5 辐照度
+ghi_log = np.log1p(data_List[:,:,0])
+
 if label == 'train':
 # 避免 log(0)
-    ghi_log = np.log1p(data_List[:,:,0])
     solar_mu = np.nanmean(ghi_log)
     solar_sigma = np.nanstd(ghi_log)
 else:
-    loaded = np.load(f"/home/jinhm/data/solar/era5_solar/MirrorEarth/{project}/{project}_{label}.npz",allow_pickle=False)
+    loaded = np.load(f"/home/jinhm/data/solar/era5_solar/MirrorEarth/{project}/{project}_train.npz",allow_pickle=False)
     solar_mu = loaded["solar_mu"]
     solar_sigma = loaded["solar_sigma"]
 
