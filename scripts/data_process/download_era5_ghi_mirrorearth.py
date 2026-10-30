@@ -40,13 +40,19 @@ def download_msk_era5(
 
 if __name__ == "__main__":
 
-    point_file = '/home/jinhm/PhD_Project/SolarRadiation_Retrieval/data/coords/coords_06.csv'
+    point_file = '/home/jinhm/PhD_Project/SolarRadiation_Retrieval/data/coords/coords_01_copy.csv'
     point_data = pd.read_csv(point_file)
     for _, row in point_data.iterrows():
         lat = float(row.iloc[0])
         lon = float(row.iloc[1])
         try:
-            download_msk_era5(lat=lat, lon=lon, out_dir = '/home/jinhm/data/solar/era5_solar/MirrorEarth/coords_06')
+            download_msk_era5(
+                    lat=lat, 
+                    lon=lon,                         
+                    start_date='2026-01-01',
+                    end_date="2026-10-01",
+                    out_dir = '/home/jinhm'
+            )
         except:
             raise('存在问题！')
 

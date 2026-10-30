@@ -41,11 +41,11 @@ class SMACNPDataset(Dataset):
         )
 
         # 输入内容和目标
-        x_context = self.data[idx, content_idx, :-1]  # (n_content, features)
-        y_context = self.data[idx, content_idx, -1]
+        x_context = self.data[idx, content_idx, :-2]  # (n_content, features)
+        y_context = self.data[idx, content_idx, -2]
 
-        x_target = self.data[idx, target_idx, :-1]    # (剩余坐标数, features)
-        y_target = self.data[idx, target_idx, -1]
+        x_target = self.data[idx, target_idx, :-2]    # (剩余坐标数, features)
+        y_target = self.data[idx, target_idx, -2]
 
         return {
             "x_context": torch.as_tensor(x_context, dtype=torch.float32),

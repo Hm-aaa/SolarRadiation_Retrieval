@@ -4,13 +4,12 @@ import torch
 import numpy as np
 from src.climate_gridder.smacnp import SMACNP_ALL
 from src.climate_gridder.dataset import SMACNPDataset
-import yaml 
+import yaml
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
 import os
 import torch.optim as optim
 import torch.nn as nn
-from datetime import datetime
 
 def train_one_epoch(model, dataloader, loss_fn, optimizer, device):
     """
@@ -79,7 +78,6 @@ def validate(model, dataloader, loss_fn, device):
         val_rmse = np.sqrt(val_mse)
     
         return val_rmse
-
 
 if __name__ == '__main__':
 
@@ -155,7 +153,7 @@ if __name__ == '__main__':
 
         # 打印训练信息💻
         print(
-            f"Epoch [{epoch:03d}/{model_cfg['epochs'] + 1:03d}] | "
+            f"Epoch [{epoch:03d}/{model_cfg['epochs']:03d}] | "
             f"Train RMSE: {train_rmse:.6f} | "
             f"Val RMSE: {val_rmse:.6f} | "
             f"Time: {epoch_time:.2f}s",
@@ -179,7 +177,7 @@ if __name__ == '__main__':
                     "model_state_dict": model.state_dict(),
                     "model_cfg": model_cfg
                 },
-                model_cfg["checkpoints"],
+                model_cfg["checkpoints"]
             )
         else:
             wait += 1

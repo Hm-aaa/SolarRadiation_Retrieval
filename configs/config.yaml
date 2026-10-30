@@ -45,5 +45,5 @@ model:
   log_dir: '/home/jinhm/PhD_Project/SolarRadiation_Retrieval/logs/config'
 
   # 模型权重文件保存路径
-  patience: 20
+  patience: 20  # 用于控制早听的最大延迟次数
   checkpoints: '/home/jinhm/PhD_Project/SolarRadiation_Retrieval/outputs/checkpoints/smacnp_best.pt'

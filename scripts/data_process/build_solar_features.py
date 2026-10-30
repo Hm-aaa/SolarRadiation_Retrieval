@@ -187,7 +187,7 @@ project_path = os.getenv("PROJECT_PATH")
 if not project_path:
     raise RuntimeError(
         "环境变量 PROJECT_PATH 未设置。请先执行：\n"
-        "例如: export PROJECT_PATH=/home/jinhm/PhD_Project/SolarRadiation_Retrieval"
+        "例如: export PROJECT_PATH='/home/jinhm/PhD_Project/SolarRadiation_Retrieval'"
     )
 
 
@@ -196,7 +196,7 @@ PROJECT_PATH = Path(project_path)
 DEM_FILE = PROJECT_PATH / "data" / "DEM" / "etopo1.nc"
 
 # 需要计算的坐标文件集合
-Coords = '/home/jinhm/data/solar/era5_solar/MirrorEarth/coords_04'
+Coords = '/home/jinhm/data/solar/era5_solar/MirrorEarth/coords_04_2026'
 
 # 便利处理每个坐标文件
 for file_coords_item in glob.glob(f'{Coords}/*'):

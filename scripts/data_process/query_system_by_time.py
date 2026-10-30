@@ -10,8 +10,8 @@ from dateutil.relativedelta import relativedelta
 
 
 # 查询时间范围
-start_time = datetime(2023, 1, 1, 9, 0, 0)
-end_time = datetime(2026, 10, 16, 9, 30, 0)
+start_time = datetime(2026, 1, 1, 0, 0, 0)
+end_time = datetime(2026, 10, 1, 23, 59, 59)
 
 # CSV 输出目录
 output_dir = Path("/home/jinhuaiming/SolarRadiation_Retrieval/data/hcy_system_id")

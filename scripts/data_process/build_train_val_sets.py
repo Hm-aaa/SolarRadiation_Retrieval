@@ -50,15 +50,20 @@ def load_data_by_time_range(
         return data
 
 # 根据训练，验证，测试读取数据。
-label = "val"
-project = 'coords_04'
+label = "train"
+project = 'coords_04_2026'
 
-if label == 'train':
-    start = "2015-01-01 00:00:00"
-    end = "2024-12-31 23:59:59"
-else:
-    start = "2025-01-01 00:00:00"
-    end = "2025-12-31 23:59:59"
+# 训练
+# start = "2015-01-01 00:00:00"
+# end = "2024-12-31 23:59:59"
+
+# 验证
+# start = "2025-01-01 00:00:00"
+# end = "2025-12-31 23:59:59"
+
+# 测试
+start = "2026-01-01 00:00:00"
+end = "2026-10-01 23:59:59"
 
 # data_dir 数据集合路径
 data_dir = f'/home/jinhm/data/solar/era5_solar/MirrorEarth/{project}'
@@ -162,7 +167,8 @@ X = np.stack(
         minute_cos,
         day_sin,
         day_cos,
-        ghi_norm
+        ghi_norm,
+        data_List[:,:,0]
     ],
     axis=-1,
 ).astype(np.float32)
@@ -179,7 +185,8 @@ feature_names = np.array(
         "minute_cos",
         "day_sin",
         "day_cos",
-        "ghi_norm"
+        "ghi_norm",
+        'ghi'
     ]
 )
 
@@ -195,5 +202,5 @@ np.savez_compressed(
     elevation_mu=np.float32(mu),
     elevation_sigma=np.float32(sigma),
     solar_mu=np.float32(solar_mu),
-    solar_sigma=np.float32(solar_sigma),
+    solar_sigma=np.float32(solar_sigma)
 )
