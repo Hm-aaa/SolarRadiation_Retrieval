@@ -317,10 +317,9 @@ def bulid_feature(lat,lon,start,end):
     return x_target, make_utc_time_df(start,end)['utc_time']
 
 
-lat = 22.387555
-lon = 113.523709
 
-CONFIG_FILE = Path('/home/jinhm/PhD_Project/SolarRadiation_Retrieval/configs/config.yaml') 
+
+CONFIG_FILE = Path('/home/jinhm/PhD_Project/SolarRadiation_Retrieval/configs/config_ERA5_v1.0.yaml') 
 with open(CONFIG_FILE, "r", encoding="utf-8") as f:
     cfg = yaml.safe_load(f)
 
@@ -364,49 +363,58 @@ model.load_state_dict(checkpoint['model_state_dict'], strict=True)
 model = model.to(device)
 model.eval()
 
-data = []
+data = pd.read_csv('/home/jinhm/PhD_Project/SolarRadiation_Retrieval/data/system_id_information.csv')
+for _, item in data.iterrows():
+    lat = item['latitude']  
+    lon = item['longitude']
+    biz_id = item['biz_id']
+    print(f'{biz_id}，预报完成✅')
+    data = []
 
-loaded = np.load(f"/home/jinhm/data/solar/era5_solar/MirrorEarth/coords_04_2026/coords_04_test.npz",allow_pickle=False)
-mu = loaded["solar_mu"]
-sigma = loaded["solar_sigma"]
+    loaded = np.load(f"/home/jinhm/data/solar/era5_solar/MirrorEarth/coords_04_2026/coords_04_test.npz",allow_pickle=False)
+    mu = loaded["solar_mu"]
+    sigma = loaded["solar_sigma"]
 
-x_target,time_df = bulid_feature(lat,lon,'2026-01-01 00:00:00','2026-10-01 23:59:59')
-x_target_batches = torch.split(
-    x_target,
-    512,
-    dim=0,
-)
-for (batch, x_target_batch) in zip(train_loader, x_target_batches):
-    x_context = batch['x_context'].to(device,dtype=torch.float32)
-    y_context = batch['y_context'].to(device,dtype=torch.float32)
-    
-    # 构建查询点的特征
-    x_target_batch = x_target_batch.to(device,dtype=torch.float32)
 
-    with torch.no_grad():
-        pre = model(x_context, y_context, x_target_batch)
-    data.append(pre.detach().float().cpu().numpy())
+    x_target,time_df = bulid_feature(lat,lon,'2026-01-01 00:00:00','2026-10-01 23:59:59')
+    x_target_batches = torch.split(
+        x_target,
+        512,
+        dim=0,
+    )
 
-# 按 batch 维度合并
-pred_all = np.concatenate(data, axis=0)
+    for (batch, x_target_batch) in zip(train_loader, x_target_batches):
+        x_context = batch['x_context'].to(device,dtype=torch.float32)
+        y_context = batch['y_context'].to(device,dtype=torch.float32)
+        
+        # 构建查询点的特征
+        x_target_batch = x_target_batch.to(device,dtype=torch.float32)
 
-# 保存 CSV
-output_dir = Path("outputs/predictions")
-output_dir.mkdir(parents=True, exist_ok=True)
+        with torch.no_grad():
+            pre = model(x_context, y_context, x_target_batch)
+        data.append(pre.detach().float().cpu().numpy())
 
-# 反归一化
+    # 按 batch 维度合并
+    pred_all = np.concatenate(data, axis=0)
 
-pre = np.expm1(pred_all * sigma + mu).reshape(-1)
+    # 保存 CSV
+    output_dir = Path("outputs/predictions_50")
+    output_dir.mkdir(parents=True, exist_ok=True)
 
-result_df = pd.DataFrame({
-    'time': time_df.to_numpy(),
-    "pre": pre
-})
+    # 反归一化
 
-result_df.to_csv(
-    output_dir / '1704274070360686592.csv',
-    index=False,
-    encoding="utf-8-sig",
-    float_format="%.8f",
-)
+    pre = np.expm1(pred_all * sigma + mu).reshape(-1)
 
+    result_df = pd.DataFrame({
+        'time': time_df.to_numpy(),
+        "pre": pre
+    })
+
+    result_df.to_csv(
+        output_dir / f'{biz_id}.csv',
+        index=False,
+        encoding="utf-8-sig",
+        float_format="%.8f",
+    )
+
+# PYTHONPATH=$PWD python3 scripts/infer/infer_point.py

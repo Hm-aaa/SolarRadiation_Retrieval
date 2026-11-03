@@ -50,20 +50,20 @@ def load_data_by_time_range(
         return data
 
 # 根据训练，验证，测试读取数据。
-label = "train"
-project = 'coords_04_2026'
+label = "val"
+project = 'coords_04'
 
 # 训练
 # start = "2015-01-01 00:00:00"
 # end = "2024-12-31 23:59:59"
 
 # 验证
-# start = "2025-01-01 00:00:00"
-# end = "2025-12-31 23:59:59"
+start = "2025-01-01 00:00:00"
+end = "2025-12-31 23:59:59"
 
 # 测试
-start = "2026-01-01 00:00:00"
-end = "2026-10-01 23:59:59"
+# start = "2026-01-01 00:00:00"
+# end = "2026-10-01 23:59:59"
 
 # data_dir 数据集合路径
 data_dir = f'/home/jinhm/data/solar/era5_solar/MirrorEarth/{project}'
@@ -77,7 +77,9 @@ for coords_file_item in glob.glob(f'{data_dir}/*.csv'):
     )
     # 先删除 TIME_UTC，避免变成 object 数组
     data = data.drop(columns=["TIME_UTC"], errors="ignore")
-    data_List.append(data.to_numpy(dtype=np.float32))
+    arr = data.to_numpy(dtype=np.float32)
+
+    data_List.append(arr)
 
 # 合并
 # 0 shortwave_radiation_W/m²
@@ -101,7 +103,7 @@ if label == 'train':
     mu = np.nanmean(elev)
     sigma = np.nanstd(elev)
 else:
-    loaded = np.load(f"/home/jinhm/data/solar/era5_solar/MirrorEarth/{project}/{project}_train.npz",allow_pickle=False)
+    loaded = np.load(f"/home/jinhm/data/solar/era5_solar/MirrorEarth/{project}/{project}_train_v2.0.npz",allow_pickle=False)
     mu = loaded["elevation_mu"]
     sigma = loaded["elevation_sigma"]
 
@@ -140,14 +142,15 @@ day_sin = np.sin(day_phase)
 day_cos = np.cos(day_phase)
 
 # 5 辐照度
-ghi_log = np.log1p(data_List[:,:,0])
+# ghi_log = np.log1p(data_List[:,:,0])
+ghi_log = data_List[:,:,0]
 
 if label == 'train':
 # 避免 log(0)
     solar_mu = np.nanmean(ghi_log)
     solar_sigma = np.nanstd(ghi_log)
 else:
-    loaded = np.load(f"/home/jinhm/data/solar/era5_solar/MirrorEarth/{project}/{project}_train.npz",allow_pickle=False)
+    loaded = np.load(f"/home/jinhm/data/solar/era5_solar/MirrorEarth/{project}/{project}_train_v2.0.npz",allow_pickle=False)
     solar_mu = loaded["solar_mu"]
     solar_sigma = loaded["solar_sigma"]
 
@@ -173,6 +176,7 @@ X = np.stack(
     axis=-1,
 ).astype(np.float32)
 
+
 feature_names = np.array(
     [
         "latitude_norm",
@@ -190,13 +194,44 @@ feature_names = np.array(
     ]
 )
 
+# (时间，坐标，特征)
 X = np.transpose(X, (1, 0, 2))
+
+# ================================================
+# 删除夜间数据的80%
+# ================================================
+# 辐射度为 0 的位置
+# night_mask = np.isclose(X[:, :, -1], 0.0, atol=1e-6)
+
+# # 至少80%的坐标处于夜间，才算是夜间时间步
+# night_time_mask = night_mask.mean(axis=1) > 0.8
+
+# # 夜间时间步索引
+# night_idx = np.flatnonzero(night_time_mask)
+# n_night = night_idx.size
+
+# # 随机删除 80% 的夜间时间步
+# rng = np.random.default_rng(42)
+# n_remove = int(n_night * 0.8)
+
+# remove_idx = rng.choice(
+#     night_idx,
+#     size=n_remove,
+#     replace=False,
+# )
+
+# keep_mask = np.ones(X.shape[0], dtype=bool)
+# keep_mask[remove_idx] = False
+# X = X[keep_mask]
+# ===============================================
+# 删除夜间数据的80%
+# ===============================================
 print("X shape:", X.shape)
 print("X dtype:", X.dtype)
 
 # 6. 保存为 npz
 np.savez_compressed(
-    f"/home/jinhm/data/solar/era5_solar/MirrorEarth/{project}/{project}_{label}.npz",
+    f"/home/jinhm/data/solar/era5_solar/MirrorEarth/{project}/{project}_{label}_v2.0.npz",
     X=X,
     feature_names=feature_names,
     elevation_mu=np.float32(mu),

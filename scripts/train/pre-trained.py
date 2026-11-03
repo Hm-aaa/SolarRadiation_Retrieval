@@ -84,7 +84,8 @@ if __name__ == '__main__':
     # ====================================================
     # 1. load config.yaml 
     # ====================================================
-    CONFIG_FILE = Path(os.getenv("PROJECT_PATH")) / 'configs' / 'config.yaml'
+    CONFIG_FILE = Path(os.getenv("PROJECT_PATH")) / 'configs' / 'config_ERA5_v2.0.yaml'
+    print(f'模型加载配置文件成功🏅-{CONFIG_FILE}')
     with open(CONFIG_FILE, "r", encoding="utf-8") as f:
         cfg = yaml.safe_load(f)
 
@@ -183,5 +184,6 @@ if __name__ == '__main__':
             wait += 1
 
         if wait >= patience:
+            print(f'训练完成✅, 最优验证RMSE={best_val_rmse:.6f}')
             break
 

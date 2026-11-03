@@ -9,11 +9,12 @@ def download_msk_era5(
                         name = 'shortwave_radiation',
                         start_date='2015-01-01',
                         end_date="2026-01-01",
-                        out_dir = '/home/jinhm/data/solar/era5_solar/MirrorEarth /coords_01'
+                        out_dir = '/home/jinhm/PhD_Project/SolarRadiation_Retrieval/data/era5',
+                        biz_id = '1'
                     ):
                     
     os.makedirs(out_dir, exist_ok=True)
-    out_file = f'{out_dir}/coords_{lat}_{lon}.csv'
+    out_file = f'{out_dir}/{biz_id}.csv'
     if os.path.exists(out_file):
         print(f'{lat}_{lon}文件存在')
         return
@@ -27,7 +28,7 @@ def download_msk_era5(
         start_date=start_date,
         end_date=end_date,
         temporal_resolution="hourly_1",   # 原始 1 小时分辨率
-        timezone="UTC",                   # 明确使用 UTC
+        timezone="UTC"                    # 明确使用 UTC
     )
 
     point = resp[0]
@@ -40,18 +41,19 @@ def download_msk_era5(
 
 if __name__ == "__main__":
 
-    point_file = '/home/jinhm/PhD_Project/SolarRadiation_Retrieval/data/coords/coords_01_copy.csv'
+    point_file = '/home/jinhm/PhD_Project/SolarRadiation_Retrieval/data/system_id_information.csv'
     point_data = pd.read_csv(point_file)
     for _, row in point_data.iterrows():
-        lat = float(row.iloc[0])
-        lon = float(row.iloc[1])
+        lat = float(row.iloc[3])
+        lon = float(row.iloc[2])
         try:
             download_msk_era5(
                     lat=lat, 
                     lon=lon,                         
                     start_date='2026-01-01',
                     end_date="2026-10-01",
-                    out_dir = '/home/jinhm'
+                    out_dir = '/home/jinhm/era5',
+                    biz_id = row.iloc[0]
             )
         except:
             raise('存在问题！')

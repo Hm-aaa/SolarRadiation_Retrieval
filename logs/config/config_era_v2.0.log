@@ -1,0 +1,13 @@
+模型加载配置文件成功🏅-/home/jinhm/PhD_Project/SolarRadiation_Retrieval/configs/config_ERA5_v2.0.yaml
+Using Global Attention encoder (Paper Faithful Keys: Key=Attr, Value=Attr+Y)
+Epoch [001/1000] | Train RMSE: 0.562888 | Val RMSE: 0.451223 | Time: 242.97s
+Epoch [002/1000] | Train RMSE: 0.264559 | Val RMSE: 0.402788 | Time: 242.78s
+Epoch [003/1000] | Train RMSE: 0.225383 | Val RMSE: 0.374227 | Time: 242.11s
+Epoch [004/1000] | Train RMSE: 0.200740 | Val RMSE: 0.358626 | Time: 242.75s
+Epoch [005/1000] | Train RMSE: 0.187328 | Val RMSE: 0.340741 | Time: 242.83s
+Epoch [006/1000] | Train RMSE: 0.178274 | Val RMSE: 0.336386 | Time: 242.96s
+Epoch [007/1000] | Train RMSE: 0.182017 | Val RMSE: 0.334000 | Time: 243.04s
+Epoch [008/1000] | Train RMSE: 0.172917 | Val RMSE: 0.332178 | Time: 243.03s
+Epoch [009/1000] | Train RMSE: 0.173054 | Val RMSE: 0.331399 | Time: 243.16s
+Epoch [010/1000] | Train RMSE: 0.174814 | Val RMSE: 0.330002 | Time: 242.91s
+Epoch [011/1000] | Train RMSE: 0.168812 | Val RMSE: 0.329214 | Time: 242.76s
