@@ -103,7 +103,7 @@ if label == 'train':
     mu = np.nanmean(elev)
     sigma = np.nanstd(elev)
 else:
-    loaded = np.load(f"/home/jinhm/data/solar/era5_solar/MirrorEarth/{project}/{project}_train_v2.0.npz",allow_pickle=False)
+    loaded = np.load(f"/home/jinhm/data/solar/era5_solar/MirrorEarth/{project}/{project}_train_v1.1.npz",allow_pickle=False)
     mu = loaded["elevation_mu"]
     sigma = loaded["elevation_sigma"]
 
@@ -142,15 +142,14 @@ day_sin = np.sin(day_phase)
 day_cos = np.cos(day_phase)
 
 # 5 辐照度
-# ghi_log = np.log1p(data_List[:,:,0])
-ghi_log = data_List[:,:,0]
+ghi_log = np.log1p(data_List[:,:,0])
 
 if label == 'train':
 # 避免 log(0)
     solar_mu = np.nanmean(ghi_log)
     solar_sigma = np.nanstd(ghi_log)
 else:
-    loaded = np.load(f"/home/jinhm/data/solar/era5_solar/MirrorEarth/{project}/{project}_train_v2.0.npz",allow_pickle=False)
+    loaded = np.load(f"/home/jinhm/data/solar/era5_solar/MirrorEarth/{project}/{project}_train_v1.1.npz",allow_pickle=False)
     solar_mu = loaded["solar_mu"]
     solar_sigma = loaded["solar_sigma"]
 
@@ -204,15 +203,15 @@ X = np.transpose(X, (1, 0, 2))
 # night_mask = np.isclose(X[:, :, -1], 0.0, atol=1e-6)
 
 # # 至少80%的坐标处于夜间，才算是夜间时间步
-# night_time_mask = night_mask.mean(axis=1) > 0.8
+# night_time_mask = night_mask.mean(axis=1) > 0.2
 
 # # 夜间时间步索引
 # night_idx = np.flatnonzero(night_time_mask)
 # n_night = night_idx.size
 
-# # 随机删除 80% 的夜间时间步
+# # 随机删除 90% 的夜间时间步
 # rng = np.random.default_rng(42)
-# n_remove = int(n_night * 0.8)
+# n_remove = int(n_night * 0.9)
 
 # remove_idx = rng.choice(
 #     night_idx,
@@ -231,7 +230,7 @@ print("X dtype:", X.dtype)
 
 # 6. 保存为 npz
 np.savez_compressed(
-    f"/home/jinhm/data/solar/era5_solar/MirrorEarth/{project}/{project}_{label}_v2.0.npz",
+    f"/home/jinhm/data/solar/era5_solar/MirrorEarth/{project}/{project}_{label}_v1.1.npz",
     X=X,
     feature_names=feature_names,
     elevation_mu=np.float32(mu),

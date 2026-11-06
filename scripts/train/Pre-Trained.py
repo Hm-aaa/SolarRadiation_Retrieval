@@ -2,7 +2,7 @@ import time
 from pathlib import Path
 import torch
 import numpy as np
-from src.climate_gridder.smacnp import SMACNP_ALL
+from src.climate_gridder.smacnp_d import SMACNP_ALL_D
 from src.climate_gridder.dataset import SMACNPDataset
 import yaml
 from torch.utils.data import DataLoader
@@ -10,6 +10,7 @@ from torch.utils.tensorboard import SummaryWriter
 import os
 import torch.optim as optim
 import torch.nn as nn
+import sys
 
 def train_one_epoch(model, dataloader, loss_fn, optimizer, device):
     """
@@ -84,7 +85,8 @@ if __name__ == '__main__':
     # ====================================================
     # 1. load config.yaml 
     # ====================================================
-    CONFIG_FILE = Path(os.getenv("PROJECT_PATH")) / 'configs' / 'config_ERA5_v2.0.yaml'
+    # 读取配置文件
+    CONFIG_FILE = Path(sys.argv[1])
     print(f'模型加载配置文件成功🏅-{CONFIG_FILE}')
     with open(CONFIG_FILE, "r", encoding="utf-8") as f:
         cfg = yaml.safe_load(f)
@@ -98,7 +100,7 @@ if __name__ == '__main__':
     # ====================================================
     # 2. loading model 
     # ====================================================
-    model = SMACNP_ALL(
+    model = SMACNP_ALL_D(
             input_dim=model_cfg['input_dim'],
             spatial_dim=model_cfg['spatial_dim'],
             attr_dim=model_cfg['attr_dim'],
@@ -125,7 +127,7 @@ if __name__ == '__main__':
     # 4. Initialize the model
     # ====================================================
     # 配置训练数据管道
-    train_dataset = SMACNPDataset(model_cfg['train_sets'], model_cfg['context_fraction'], model_cfg['send'])
+    train_dataset = SMACNPDataset(model_cfg['train_sets'], model_cfg['context_fraction'], model_cfg['send'], shuffle=True)
     val_dataset = SMACNPDataset(model_cfg['val_sets'], model_cfg['context_fraction'], model_cfg['send'])
 
     train_dataloader = DataLoader(train_dataset, batch_size= batch_size)

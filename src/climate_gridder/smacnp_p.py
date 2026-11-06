@@ -1290,7 +1290,7 @@ class HybridGraphVarianceDecoder(nn.Module):
 # ============================ 
 # MAIN SMACNP MODEL (FULL IMPLEMENTATION)
 # ============================ 
-class SMACNP_ALL(nn.Module):
+class SMACNP_ALL_P(nn.Module):
     def __init__(self, input_dim, spatial_dim, attr_dim, y_dim,
                  r_dim, w_dim, v_dim, hidden_size,
                  num_heads, dropout_rate, spatial_indices,
@@ -1420,7 +1420,7 @@ class SMACNP_ALL(nn.Module):
         # --- 3. Decoders ---
         # Base local decoders
         local_temp_mean_decoder = MeanDecoder(r_dim, w_dim, spatial_dim, encoder_attr_dim, 
-                                              hidden_size, y_dim, dropout_rate, num_layers_mlp)
+                                              hidden_size, 21, dropout_rate, num_layers_mlp)
         # local_temp_variance_decoder = VarianceDecoder(v_dim, spatial_dim, encoder_attr_dim, 
         #                                               hidden_size, 1, dropout_rate, num_layers_mlp)
 
@@ -1509,7 +1509,7 @@ if __name__ == "__main__":
     y_dim = 1
     spatial_indices = [0, 1]
 
-    model = SMACNP_ALL(
+    model = SMACNP_ALL_P(
         input_dim=input_dim,
         spatial_dim=spatial_dim,
         attr_dim=attr_dim,

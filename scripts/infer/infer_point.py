@@ -316,105 +316,101 @@ def bulid_feature(lat,lon,start,end):
 
     return x_target, make_utc_time_df(start,end)['utc_time']
 
+if __name__ == '__main__':
+    CONFIG_FILE = Path('/home/jinhm/PhD_Project/SolarRadiation_Retrieval/configs/config_ERA5_v1.1.yaml') 
+    with open(CONFIG_FILE, "r", encoding="utf-8") as f:
+        cfg = yaml.safe_load(f)
 
+    model_cfg = cfg["model"]
+    device = torch.device(model_cfg['device'])
+    device = torch.device('cuda:0')
 
-
-CONFIG_FILE = Path('/home/jinhm/PhD_Project/SolarRadiation_Retrieval/configs/config_ERA5_v1.0.yaml') 
-with open(CONFIG_FILE, "r", encoding="utf-8") as f:
-    cfg = yaml.safe_load(f)
-
-model_cfg = cfg["model"]
-device = torch.device(model_cfg['device'])
-device = torch.device('cuda:0')
-
-test_file = '/home/jinhm/data/solar/era5_solar/MirrorEarth/coords_04_2026/coords_04_test.npz'
-train_dataset = SMACNPDataset(test_file, 0.5, 42)
-train_loader = DataLoader(
-    train_dataset,
-    batch_size=512,
-    shuffle=False,
-    num_workers=4,
-    pin_memory=True,
-)
-
-model = SMACNP_ALL(
-        input_dim=model_cfg['input_dim'],
-        spatial_dim=model_cfg['spatial_dim'],
-        attr_dim=model_cfg['attr_dim'],
-        y_dim=model_cfg['y_dim'],
-        r_dim=model_cfg['r_dim'], # 属性
-        w_dim=model_cfg['w_dim'], # 坐标
-        v_dim=model_cfg['v_dim'], # 方差的，我取消了
-        hidden_size=model_cfg['hidden_size'], # MLP 的维度
-        num_heads=model_cfg['num_heads'],
-        dropout_rate=model_cfg['dropout_rate'],
-        spatial_indices=model_cfg['spatial_indices'],
-        use_hybrid_decoder=model_cfg['use_hybrid_decoder'],
-        use_adaptive_knn=model_cfg['use_adaptive_knn'],
-        use_positional_encoding=model_cfg['use_positional_encoding']
-)
-checkpoint = torch.load(
-    model_cfg['checkpoints'],
-    map_location=device,
-    weights_only=True,
-)
-
-model.load_state_dict(checkpoint['model_state_dict'], strict=True)
-model = model.to(device)
-model.eval()
-
-data = pd.read_csv('/home/jinhm/PhD_Project/SolarRadiation_Retrieval/data/system_id_information.csv')
-for _, item in data.iterrows():
-    lat = item['latitude']  
-    lon = item['longitude']
-    biz_id = item['biz_id']
-    print(f'{biz_id}，预报完成✅')
-    data = []
-
-    loaded = np.load(f"/home/jinhm/data/solar/era5_solar/MirrorEarth/coords_04_2026/coords_04_test.npz",allow_pickle=False)
-    mu = loaded["solar_mu"]
-    sigma = loaded["solar_sigma"]
-
-
-    x_target,time_df = bulid_feature(lat,lon,'2026-01-01 00:00:00','2026-10-01 23:59:59')
-    x_target_batches = torch.split(
-        x_target,
-        512,
-        dim=0,
+    test_file = '/home/jinhm/data/solar/era5_solar/MirrorEarth/coords_04_2026/coords_04_test.npz'
+    train_dataset = SMACNPDataset(test_file, 0.5, 42)
+    train_loader = DataLoader(
+        train_dataset,
+        batch_size=512,
+        shuffle=False,
+        num_workers=4,
+        pin_memory=True,
     )
 
-    for (batch, x_target_batch) in zip(train_loader, x_target_batches):
-        x_context = batch['x_context'].to(device,dtype=torch.float32)
-        y_context = batch['y_context'].to(device,dtype=torch.float32)
-        
-        # 构建查询点的特征
-        x_target_batch = x_target_batch.to(device,dtype=torch.float32)
-
-        with torch.no_grad():
-            pre = model(x_context, y_context, x_target_batch)
-        data.append(pre.detach().float().cpu().numpy())
-
-    # 按 batch 维度合并
-    pred_all = np.concatenate(data, axis=0)
-
-    # 保存 CSV
-    output_dir = Path("outputs/predictions_50")
-    output_dir.mkdir(parents=True, exist_ok=True)
-
-    # 反归一化
-
-    pre = np.expm1(pred_all * sigma + mu).reshape(-1)
-
-    result_df = pd.DataFrame({
-        'time': time_df.to_numpy(),
-        "pre": pre
-    })
-
-    result_df.to_csv(
-        output_dir / f'{biz_id}.csv',
-        index=False,
-        encoding="utf-8-sig",
-        float_format="%.8f",
+    model = SMACNP_ALL(
+            input_dim=model_cfg['input_dim'],
+            spatial_dim=model_cfg['spatial_dim'],
+            attr_dim=model_cfg['attr_dim'],
+            y_dim=model_cfg['y_dim'],
+            r_dim=model_cfg['r_dim'], # 属性
+            w_dim=model_cfg['w_dim'], # 坐标
+            v_dim=model_cfg['v_dim'], # 方差的，我取消了
+            hidden_size=model_cfg['hidden_size'], # MLP 的维度
+            num_heads=model_cfg['num_heads'],
+            dropout_rate=model_cfg['dropout_rate'],
+            spatial_indices=model_cfg['spatial_indices'],
+            use_hybrid_decoder=model_cfg['use_hybrid_decoder'],
+            use_adaptive_knn=model_cfg['use_adaptive_knn'],
+            use_positional_encoding=model_cfg['use_positional_encoding']
+    )
+    checkpoint = torch.load(
+        model_cfg['checkpoints'],
+        map_location=device,
+        weights_only=True,
     )
 
-# PYTHONPATH=$PWD python3 scripts/infer/infer_point.py
+    model.load_state_dict(checkpoint['model_state_dict'], strict=True)
+    model = model.to(device)
+    model.eval()
+
+    data = pd.read_csv('/home/jinhm/PhD_Project/SolarRadiation_Retrieval/data/system_id_information.csv')
+    for _, item in data.iterrows():
+        lat = item['latitude']  
+        lon = item['longitude']
+        biz_id = item['biz_id']
+        print(f'{biz_id}，预报完成✅')
+        data = []
+
+        x_target,time_df = bulid_feature(lat,lon,'2026-01-01 00:00:00','2026-10-01 23:59:59')
+        x_target_batches = torch.split(
+            x_target,
+            512,
+            dim=0,
+        )
+
+        for (batch, x_target_batch) in zip(train_loader, x_target_batches):
+            x_context = batch['x_context'].to(device,dtype=torch.float32)
+            y_context = batch['y_context'].to(device,dtype=torch.float32)
+            
+            # 构建查询点的特征
+            x_target_batch = x_target_batch.to(device,dtype=torch.float32)
+
+            with torch.no_grad():
+                pre = model(x_context, y_context, x_target_batch)
+            data.append(pre.detach().float().cpu().numpy())
+
+        # 按 batch 维度合并
+        pred_all = np.concatenate(data, axis=0)
+
+        # 保存 CSV
+        output_dir = Path("outputs/predictions_50")
+        output_dir.mkdir(parents=True, exist_ok=True)
+
+        # 反归一化
+        loaded = np.load(f"/home/jinhm/data/solar/era5_solar/MirrorEarth/coords_04/coords_04_train_v1.1.npz",allow_pickle=False)
+        mu = loaded["solar_mu"]
+        sigma = loaded["solar_sigma"]
+        pre = np.expm1(pred_all * sigma + mu).reshape(-1)
+        # pre = (pred_all * sigma + mu).reshape(-1)
+
+        result_df = pd.DataFrame({
+            'time': time_df.to_numpy(),
+            "pre": pre
+        })
+
+        result_df.to_csv(
+            output_dir / f'{biz_id}.csv',
+            index=False,
+            encoding="utf-8-sig",
+            float_format="%.8f"
+        )
+
+    # PYTHONPATH=$PWD python3 scripts/infer/infer_point.py
