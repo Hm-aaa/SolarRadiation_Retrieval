@@ -2,7 +2,7 @@
 import os
 import numpy as np
 import optuna
-from src.climate_gridder.smacnp import SMACNP_ALL
+from src.climate_gridder.smacnp_d import SMACNP_ALL_D
 from src.climate_gridder.dataset import SMACNPDataset
 from torch.utils.data import DataLoader
 import torch
@@ -126,7 +126,7 @@ class TPETrainer:
         # ====================================================
         # 1. loading model 
         # ====================================================
-        model = SMACNP_ALL(
+        model = SMACNP_ALL_D(
                 input_dim= 10,
                 spatial_dim= 2,
                 attr_dim= 8,

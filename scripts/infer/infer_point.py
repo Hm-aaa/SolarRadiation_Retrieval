@@ -1,6 +1,6 @@
 from pathlib import Path
 import torch
-from src.climate_gridder.smacnp import SMACNP_ALL
+from src.climate_gridder.smacnp_d import SMACNP_ALL_D
 from src.climate_gridder.dataset import SMACNPDataset
 import yaml 
 from torch.utils.data import DataLoader
@@ -317,16 +317,15 @@ def bulid_feature(lat,lon,start,end):
     return x_target, make_utc_time_df(start,end)['utc_time']
 
 if __name__ == '__main__':
-    CONFIG_FILE = Path('/home/jinhm/PhD_Project/SolarRadiation_Retrieval/configs/config_ERA5_v1.1.yaml') 
+    CONFIG_FILE = Path('/home/jinhm/PhD_Project/SolarRadiation_Retrieval/configs/config_ERA5_v1.0.yaml') 
     with open(CONFIG_FILE, "r", encoding="utf-8") as f:
         cfg = yaml.safe_load(f)
 
     model_cfg = cfg["model"]
     device = torch.device(model_cfg['device'])
-    device = torch.device('cuda:0')
 
     test_file = '/home/jinhm/data/solar/era5_solar/MirrorEarth/coords_04_2026/coords_04_test.npz'
-    train_dataset = SMACNPDataset(test_file, 0.5, 42)
+    train_dataset = SMACNPDataset(test_file, model_cfg['context_fraction'], model_cfg['send'])
     train_loader = DataLoader(
         train_dataset,
         batch_size=512,
@@ -335,7 +334,7 @@ if __name__ == '__main__':
         pin_memory=True,
     )
 
-    model = SMACNP_ALL(
+    model = SMACNP_ALL_D(
             input_dim=model_cfg['input_dim'],
             spatial_dim=model_cfg['spatial_dim'],
             attr_dim=model_cfg['attr_dim'],
@@ -391,15 +390,14 @@ if __name__ == '__main__':
         pred_all = np.concatenate(data, axis=0)
 
         # 保存 CSV
-        output_dir = Path("outputs/predictions_50")
+        output_dir = Path("outputs/test")
         output_dir.mkdir(parents=True, exist_ok=True)
 
         # 反归一化
-        loaded = np.load(f"/home/jinhm/data/solar/era5_solar/MirrorEarth/coords_04/coords_04_train_v1.1.npz",allow_pickle=False)
+        loaded = np.load(model_cfg['train_sets'],allow_pickle=False)
         mu = loaded["solar_mu"]
         sigma = loaded["solar_sigma"]
         pre = np.expm1(pred_all * sigma + mu).reshape(-1)
-        # pre = (pred_all * sigma + mu).reshape(-1)
 
         result_df = pd.DataFrame({
             'time': time_df.to_numpy(),

@@ -7,7 +7,7 @@ from pathlib import Path
 # ============================================================
 # 1. 读取数据
 # ============================================================
-path = "/home/jinhm/data/solar/era5_solar/MirrorEarth/coords_04/coords_04_train_v2.0.npz"
+path = "/home/jinhm/data/solar/era5_solar/MirrorEarth/coords_04/coords_04_train_v1.0.npz"
 
 with np.load(path, allow_pickle=False) as data:
     x = data["X"][:, 1200, -2]

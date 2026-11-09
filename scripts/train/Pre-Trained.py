@@ -127,10 +127,10 @@ if __name__ == '__main__':
     # 4. Initialize the model
     # ====================================================
     # 配置训练数据管道
-    train_dataset = SMACNPDataset(model_cfg['train_sets'], model_cfg['context_fraction'], model_cfg['send'], shuffle=True)
+    train_dataset = SMACNPDataset(model_cfg['train_sets'], model_cfg['context_fraction'], model_cfg['send'])
     val_dataset = SMACNPDataset(model_cfg['val_sets'], model_cfg['context_fraction'], model_cfg['send'])
 
-    train_dataloader = DataLoader(train_dataset, batch_size= batch_size)
+    train_dataloader = DataLoader(train_dataset, batch_size= batch_size, shuffle=True)
     val_dataloader = DataLoader(val_dataset, batch_size= batch_size)
     # 加载设备
     # # 初始化模型，替换成你自己的模型

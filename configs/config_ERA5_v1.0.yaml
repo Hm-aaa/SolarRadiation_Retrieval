@@ -29,7 +29,7 @@ model:
 
   # 超参数
   lr: 1.0e-05
-  batch_size: 512
+  batch_size: 256
   epochs: 1000
 
   # 训练验证数据集
