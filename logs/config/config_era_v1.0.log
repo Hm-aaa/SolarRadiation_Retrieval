@@ -386,3 +386,8 @@ Epoch [383/1000] | Train RMSE: 0.006969 | Val RMSE: 0.056811 | Time: 242.38s
 Epoch [384/1000] | Train RMSE: 0.006958 | Val RMSE: 0.056894 | Time: 242.41s
 Epoch [385/1000] | Train RMSE: 0.006957 | Val RMSE: 0.056831 | Time: 242.59s
 Epoch [386/1000] | Train RMSE: 0.006939 | Val RMSE: 0.056933 | Time: 242.45s
+Epoch [387/1000] | Train RMSE: 0.006937 | Val RMSE: 0.056842 | Time: 242.56s
+Epoch [388/1000] | Train RMSE: 0.006927 | Val RMSE: 0.056788 | Time: 242.21s
+Epoch [389/1000] | Train RMSE: 0.006920 | Val RMSE: 0.057126 | Time: 242.43s
+Epoch [390/1000] | Train RMSE: 0.006914 | Val RMSE: 0.056682 | Time: 242.71s
+Epoch [391/1000] | Train RMSE: 0.006905 | Val RMSE: 0.056650 | Time: 242.47s

@@ -1,6 +1,6 @@
 # config.yaml
 project:
-  name1: 'Solar Radiation Retrieval'
+  name: 'Solar Radiation Retrieval'
   time: '2026-10-01'
 model:
   name: 'SMACNP'
