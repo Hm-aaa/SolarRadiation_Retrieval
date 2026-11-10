@@ -7,7 +7,6 @@ from src.climate_gridder.dataset import SMACNPDataset
 import yaml
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
-import os
 import torch.optim as optim
 import torch.nn as nn
 import sys
