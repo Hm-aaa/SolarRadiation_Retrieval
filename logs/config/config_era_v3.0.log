@@ -1,0 +1,24 @@
+模型加载配置文件成功🏅-/home/jinhm/PhD_Project/SolarRadiation_Retrieval/configs/config_ERA5_v1.0.yaml
+Using Global Attention encoder (Paper Faithful Keys: Key=Attr, Value=Attr+Y)
+Epoch [001/1000] | Train RMSE: 0.209443 | Val RMSE: 0.246203 | Time: 250.62s
+Epoch [002/1000] | Train RMSE: 0.054419 | Val RMSE: 0.134212 | Time: 249.90s
+Epoch [003/1000] | Train RMSE: 0.031373 | Val RMSE: 0.156178 | Time: 249.17s
+Epoch [004/1000] | Train RMSE: 0.032222 | Val RMSE: 0.184309 | Time: 249.72s
+Epoch [005/1000] | Train RMSE: 0.031159 | Val RMSE: 0.135860 | Time: 248.93s
+Epoch [006/1000] | Train RMSE: 0.031282 | Val RMSE: 0.143965 | Time: 249.72s
+Epoch [007/1000] | Train RMSE: 0.036560 | Val RMSE: 0.215461 | Time: 249.62s
+Epoch [008/1000] | Train RMSE: 0.038301 | Val RMSE: 0.198150 | Time: 249.00s
+Epoch [009/1000] | Train RMSE: 0.044507 | Val RMSE: 0.260084 | Time: 248.38s
+Epoch [010/1000] | Train RMSE: 0.051513 | Val RMSE: 0.178100 | Time: 248.41s
+Epoch [011/1000] | Train RMSE: 0.037519 | Val RMSE: 0.157115 | Time: 247.37s
+Epoch [012/1000] | Train RMSE: 0.036096 | Val RMSE: 0.158264 | Time: 247.31s
+Epoch [013/1000] | Train RMSE: 0.033392 | Val RMSE: 0.151502 | Time: 248.65s
+Epoch [014/1000] | Train RMSE: 0.032423 | Val RMSE: 0.142092 | Time: 247.67s
+Epoch [015/1000] | Train RMSE: 0.032126 | Val RMSE: 0.138722 | Time: 247.89s
+Epoch [016/1000] | Train RMSE: 0.028071 | Val RMSE: 0.133775 | Time: 246.90s
+Epoch [017/1000] | Train RMSE: 0.028233 | Val RMSE: 0.143264 | Time: 247.97s
+Epoch [018/1000] | Train RMSE: 0.029694 | Val RMSE: 0.156996 | Time: 246.44s
+Epoch [019/1000] | Train RMSE: 0.028468 | Val RMSE: 0.135349 | Time: 246.35s
+Epoch [020/1000] | Train RMSE: 0.026666 | Val RMSE: 0.135527 | Time: 246.59s
+Epoch [021/1000] | Train RMSE: 0.025650 | Val RMSE: 0.140446 | Time: 246.75s
+Epoch [022/1000] | Train RMSE: 0.025640 | Val RMSE: 0.128042 | Time: 246.73s

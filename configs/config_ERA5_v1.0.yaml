@@ -28,8 +28,8 @@ model:
   use_positional_encoding: false
 
   # 超参数
-  lr: 1.0e-05
-  batch_size: 256
+  lr: 1.0e-03
+  batch_size: 1024
   epochs: 1000
 
   # 训练验证数据集
@@ -45,5 +45,5 @@ model:
   log_dir: '/home/jinhm/PhD_Project/SolarRadiation_Retrieval/logs/config'
 
   # 模型权重文件保存路径
-  patience: 50  # 用于控制早听的最大延迟次数
-  checkpoints: '/home/jinhm/PhD_Project/SolarRadiation_Retrieval/outputs/checkpoints/smacnp_best_v1.0.pt'
+  patience: 100  # 用于控制早听的最大延迟次数
+  checkpoints: '/home/jinhm/PhD_Project/SolarRadiation_Retrieval/outputs/checkpoints/smacnp_best_v3.0.pt'

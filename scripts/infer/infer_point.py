@@ -331,7 +331,7 @@ if __name__ == '__main__':
         batch_size=512,
         shuffle=False,
         num_workers=4,
-        pin_memory=True,
+        pin_memory=True
     )
 
     model = SMACNP_ALL_D(
@@ -350,6 +350,7 @@ if __name__ == '__main__':
             use_adaptive_knn=model_cfg['use_adaptive_knn'],
             use_positional_encoding=model_cfg['use_positional_encoding']
     )
+
     checkpoint = torch.load(
         model_cfg['checkpoints'],
         map_location=device,
@@ -384,7 +385,7 @@ if __name__ == '__main__':
 
             with torch.no_grad():
                 pre = model(x_context, y_context, x_target_batch)
-            data.append(pre.detach().float().cpu().numpy())
+            data.append(pre.cpu().numpy())
 
         # 按 batch 维度合并
         pred_all = np.concatenate(data, axis=0)

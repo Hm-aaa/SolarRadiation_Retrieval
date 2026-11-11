@@ -92,7 +92,7 @@ for coords_file_item in glob.glob(f'{data_dir}/*.csv'):
 # 7 day_of_year
 data_List = np.stack(data_List, axis=0)
 
-# 1 经纬度 进行归一化操作
+# 1 经纬度 进行归一化操作（按照中国区域进行归一化） max-min归一化
 latitude_norm = (data_List[:,:,1] - 15) / (55 - 15)
 longitude_norm = (data_List[:,:,2] - 70) / (140 - 70)
 

@@ -14,12 +14,6 @@ import sys
 def train_one_epoch(model, dataloader, loss_fn, optimizer, device):
     """
     单轮训练函数
-    Args:
-        model: 需要训练的 PyTorch 模型
-        dataloader: 训练数据 DataLoader
-        loss_fn: 损失函数（如 nn.MSELoss)
-        optimizer: 优化器（如 Adam、SGD 等）
-        device: 计算设备（'cuda' 或 'cpu')
     Returns:
         平均训练损失(float)
     """
@@ -45,13 +39,6 @@ def validate(model, dataloader, loss_fn, device):
         """
         验证函数
         用于模型在验证集上的性能评估，并将结果汇报给 Optuna，支持 early stopping。
-        Args:
-            model: 当前训练的 PyTorch 模型
-            trial: Optuna 的 trial 对象，用于超参数优化和中间结果打点
-            epoch: 当前 epoch 轮次
-            dataloader: 验证数据的 DataLoader
-            loss_fn: 损失函数（如 nn.MSELoss)
-            device: 运行设备（'cuda' 或 'cpu')
         Returns:
             val_rmse: 验证集的 RMSE 评估数值
         """
